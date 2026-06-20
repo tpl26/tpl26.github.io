@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Q</title>
+
+<style>
+:root {
+    --green: #22c55e;
+    --yellow: #facc15;
+    --red: #ef4444;
+    --text: #111827;
+    --card-bg: rgba(255,255,255,0.92);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text);
+    transition: background-color 300ms ease;
+    padding: 20px;
+}
+
+body.green {
+    background: #d4f6e2;
+}
+
+body.yellow {
+    background: #fff2b3;
+}
+
+body.red {
+    background: #ffd6d6;
+}
+
+.container {
+    width: min(92vw, 720px);
+}
+
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border-radius: 28px;
+    padding: 32px 24px;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.08);
+}
+
+.traffic-light {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 36px;
+}
+
+.light {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0.45;
+    transition: all 220ms ease;
+    border: 3px solid rgba(255,255,255,0.85);
+}
+
+.light:hover {
+    transform: scale(1.08);
+}
+
+.light.active {
+    opacity: 1;
+    transform: scale(1.15);
+    box-shadow:
+        0 0 0 8px rgba(255,255,255,0.65),
+        0 8px 20px rgba(0,0,0,0.12);
+}
+
+.light.green {
+    background: var(--green);
+}
+
+.light.yellow {
+    background: var(--yellow);
+}
+
+.light.red {
+    background: var(--red);
+}
+
+.question-container {
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.question {
+    text-align: center;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    line-height: 1.5;
+    font-weight: 500;
+    max-width: 90%;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.refresh-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 2.4rem;
+    color: #6b7280;
+    transition: all 220ms ease;
+}
+
+.refresh-btn:hover {
+    transform: rotate(90deg) scale(1.1);
+    color: #111827;
+}
+
+.refresh-btn:active {
+    transform: rotate(180deg) scale(0.95);
+}
+
+@media (max-width: 600px) {
+    .card {
+        padding: 24px 20px;
+    }
+
+    .light {
+        width: 58px;
+        height: 58px;
+    }
+
+    .question-container {
+        min-height: 260px;
+    }
+}
+</style>
+</head>
+
+<body class="green">
+
+<div class="container">
+    <div class="card">
+
+        <div class="traffic-light">
+            <div class="light green active" data-category="green"></div>
+            <div class="light yellow" data-category="yellow"></div>
+            <div class="light red" data-category="red"></div>
+        </div>
+
+        <div class="question-container">
+            <div id="question" class="question"></div>
+        </div>
+
+        <div class="actions">
+            <button
+                id="refreshBtn"
+                class="refresh-btn"
+                aria-label="Show another question"
+                title="Show another question">
+                ↻
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Questions JSON -->
+<script id="questions-data" type="application/json">
+{
+  "green": [
+    "Milliseid klassikaaslasi oled viimase 10 aasta jooksul kohanud?",
+    "Kas oled hetkel tööturul aktiivne? Kui jah, siis mis valdkonnas töötad?",
+    "Millise tegevus või roll oleks kõige sobilikum sind praeguses eluetapis kirjeldama? ",
+    "Kas sul lapsi ja/või lemmikloomi on?",
+    "Kas elad Tallinnas või kuskil mujal?",
+    "Kus kohas viimati välismaal käisid?",
+    "Milline võõrkeelne laul või luuletus sul siiani une pealt mälusügavustest esile kerkib?",
+    "Kas sa vaatad päevas rohkem oma telefoni või televiisorit?",
+    "Kuidas suhtud AI-tööriistadesse?",
+    "Kuhu soovitaksid teistel reisida?",
+    "Kuidas sul viimase 7 päeva jooksul läinud on? Kas oled teinud midagi huvitavat?",
+    "Milline on olnud sinu viimase aja nauditav filmi- või teatrielamus?",
+    "Mida sulle meeldib vabal ajal teha?,
+    Milliseid klassikaaslasi oled viimase 10 aasta jooksul kohanud?",
+    "Kas oled hetkel tööturul aktiivne? Kui jah, siis mis valdkonnas töötad?",
+    "Millise tegevus või roll oleks kõige sobilikum sind praeguses eluetapis kirjeldama? ",
+    "Kas sul lapsi ja/või lemmikloomi on?",
+    "Kas elad Tallinnas või kuskil mujal?",
+    "Kus kohas viimati välismaal käisid?",
+    "Milline võõrkeelne laul või luuletus sul siiani une pealt mälusügavustest esile kerkib?",
+    "Kas sa vaatad päevas rohkem oma telefoni või televiisorit?",
+    "Kuidas suhtud AI-tööriistadesse?",
+    "Kuhu soovitaksid teistel reisida?",
+    "Kuidas sul viimase 7 päeva jooksul läinud on? Kas oled teinud midagi huvitavat?",
+    "Milline on olnud sinu viimase aja nauditav filmi- või teatrielamus?",
+    "Mida sulle meeldib vabal ajal teha?"
+  ],
+  "yellow": [
+    "Milline oleks sinu ideaal-töökoht?",
+    "Mis on valdkond, mille kohta oled palju uurinud, kuid ei ole sinu tööga seotud? ",
+    "Kui palju sinu töö sulle rõõmu/rahulolu valmistab?",
+    "Milline õpetaja õpetas sind rohkem inimesena kui aine kaudu?",
+    "Mida mäletad minu kohta kooliajast?",
+    "Milline oli su suurim moekrahh või stiiliämber gümnaasiumi ajal, mida täna piltidelt valus vaadata on?",
+    "Kas 'lütseumlane on sinu jaoks endiselt identiteedi osa või lihtsalt rida CV-s? Kuidas see välja paistab?",
+    "Milline on olnud sinu kõige meeldejäävam reis? ",
+    "Millistes gruppides oled pärast keskkooli tegutsenud ja kuidas võrdled nende grupidünaamikat oma lütseumi klassiga?",
+    "Kirjelda üht oma meeldejäävat söögi-elamust! (ei pea olema seotud lütseumi sööklaga)",
+    "Mis on sul meeles ülekoolilistest testidest? (Jeesuse elu, kunstiteosed...)",
+    "Kas on mõni prantsuskeelne väljend, mida oled 'aidanud' teistel õigesti hääldada? (Déjà vu, Michelin, croissant vms)",
+    "Millisel teemal võiksid pidada 30-minutilise lühiloengu ilma ettevalmistuseta?",
+    "Kui saaksid võluväel jõustada ühe ülemaailmse reegli, siis mis reegel see oleks?",
+    Öeldakse, et elus on kolm tähtsat asja: tervis, raha, vaba aeg. Millisest neist kolmest praeguses eluetapis kõige rohkem puudust "tunned?",
+    "Milline unistus või ambitsioon on jäänud sul lõpuni ellu viimata?",
+    "Mis on olnud sinu elu füüsiliselt kõige raskem katsumus?",
+    "Mis raamatuid oled hiljaaegu lugenud? Kas julgeksid mõnda soovitada või mitte soovitada?",
+    Millist isiklikku tuleviku-sündmust ootad põnevusega? (näiteks: reis; jaanipäev; laps lõpetab kooli, kolib omaette elama ning saan "tema toa omi asju täis laduda)",
+    "Kuidas lõõgastud?",
+    "Millist nõu annaksid inimesele, kes oma esimest kodu ehitab või valib? (näiteks: ära vali ujuvparketti, vann on hea/ebavajalik)",
+    "Milline tehnoloogiline vidin/funktsionaalsus on sulle lähiajal rõõmu valmistanud?",
+    "Kuidas erineb noorem põlvkond n-ö laulva revolutsiooni generatsioonist ja miks on nad märksa rohkem hukka läinud? ",
+    "Millist elu hüve või aspekti ei oska sinu meelest paljud inimesed hinnata?",
+    "Millised inimesed sind kõige rohkem ärritavad?",
+    "Nimeta mõni raske kompromiss, mille oled teinud. ",
+    "Mis on sinu kõige varajasem mälestus lütseumist?",
+    "Mille üle oma elus oled uhke?",
+    "Mida oskad tõenäoliselt paremini teha kui enamik siin ruumis?",
+    "Mis väike seik on pannud sind hiljuti muigama/naeratama?"
+  ],
+  "red": [
+    "Mida tahaksid, et inimesed sinust mäletaksid?",
+    "Kas oled näinud kooliteemalisi õudusunenägusid? (näiteks sellest, kuidas kodutöö on tegemata)",
+    "Kas oli mõni õpetaja, keda õppisid hindama tagantjärele?",
+    "Millised emotsioonid sul lütseumiga peamiselt seostuvad?",
+    "Kuidas on sinu suhe oma vanematega ajas arenenud?",
+    "Mis on olnud su suurim "kannapööre" elus? (kõik tundus minevat kindlas suunas, aga siis hoopis teistmoodi)",
+    "Kes mind kooli ajal kõige rohkem survestas ja kuidas?",
+    "Kuidas olen kooliajaga võrreldes muutunud?",
+    "Millised valikud sinu elus on teistele olnud ootamatud? (seda poleks küll temast oodanud)",
+    "Milline kooliaegne kogemus tegi haiget? (füüsiliselt või vaimselt)",
+    "Kui sinu veebiotsingute ajalugu oleks avalik, siis mis oleks teistele seal kõige üllatavam?",
+    "Milline sotsiaalne norm on sinu meelest absurdne või ebavajalik?",
+    "Kui kõik sinu elus annaksid sinu kohta täiesti ausa hinnangu, siis mis oleks kõige sagedasem kriitika?",
+    "Mis on kõige isekam asi, mida oled teinud ja mille üle oled siiski rõõmus?",
+    "Millist riski kahetsed, et sa kunagi ei võtnud?",
+    "Kui kõigil oleks hoiatussilt küljes, siis mida sinu oma ütleks?",
+    "Kas oled läbipõlemisega kokku puutunud?",
+    "Millal viimati nutsid ja miks?",
+    "Mille poole praegu elus püüdled? Mis aspekte oma elus proovid parendada?",
+    "Mida soovitaksid sõbrale, kes otsib endale sobilikku elukaaslast/abikaasat?",
+    "Mis on sinu iseärasus, mida paljud peaksid veidraks?",
+    "Mida oled oma saavutuste/soovide nimel ohverdanud?",
+    "Mida peaksid oma elus rohkem/sagedamini tegema?",
+    "Millal viimati hirmu tundsid?",
+    "Millist osa endast pidid koolis kohandama – ja millist said arendada?",
+    "Mis aspektis oled võrreldes kooliajaga praeguseks kõige rohkem muutunud?"
+  ]
+}
+
+</script>
+
+<script>
+const questions = JSON.parse(
+    document.getElementById('questions-data').textContent
+);
+
+let currentCategory = "green";
+let previousQuestion = null;
+
+const questionEl = document.getElementById("question");
+
+function getRandomQuestion(category) {
+    const list = questions[category];
+
+    if (!list || list.length === 0) {
+        return "No questions available.";
+    }
+
+    if (list.length === 1) {
+        return list[0];
+    }
+
+    let candidate;
+
+    do {
+        candidate = list[Math.floor(Math.random() * list.length)];
+    } while (candidate === previousQuestion);
+
+    return candidate;
+}
+
+function showQuestion() {
+    const question = getRandomQuestion(currentCategory);
+    previousQuestion = question;
+
+    questionEl.animate(
+        [
+            {
+                opacity: 0,
+                transform: "translateY(8px)"
+            },
+            {
+                opacity: 1,
+                transform: "translateY(0)"
+            }
+        ],
+        {
+            duration: 250,
+            easing: "ease-out"
+        }
+    );
+
+    questionEl.textContent = question;
+}
+
+function selectCategory(category) {
+    currentCategory = category;
+    previousQuestion = null;
+
+    document.body.className = category;
+
+    document
+        .querySelectorAll(".light")
+        .forEach(light => {
+            light.classList.toggle(
+                "active",
+                light.dataset.category === category
+            );
+        });
+
+    if (navigator.vibrate) {
+        navigator.vibrate(20);
+    }
+
+    showQuestion();
+}
+
+document.querySelectorAll(".light").forEach(light => {
+    light.addEventListener("click", () => {
+        selectCategory(light.dataset.category);
+    });
+});
+
+document
+    .getElementById("refreshBtn")
+    .addEventListener("click", () => {
+        if (navigator.vibrate) {
+            navigator.vibrate(15);
+        }
+        showQuestion();
+    });
+
+// Initial question
+showQuestion();
+</script>
+
+</body>
+</html>
